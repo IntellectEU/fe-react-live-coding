@@ -1,88 +1,190 @@
-# Awesome Bank API Interaction with React and TypeScript
 
-## Phase 1: Overview
-This live coding session demonstrates how to build a React application with TypeScript to interact with the Awesome Bank API. We'll cover fetching and displaying user data and transactions, with a focus on handling pagination and errors.
+# Bank Transactions API
 
-Link with credentials and endpoint
+**This API is designed for interview purposes.** It simulates user data and banking transactions, providing endpoints for retrieving user details and transaction histories. The API also includes error handling mechanisms for testing frontend robustness.
 
-https://awesome-bank.xyz/step-2-sleepy-euler.html
+## Table of Contents
 
-- GET https://awesome-bank.xyz/api/use
-- GET https://awesome-bank.xyz/api/transactions?from={from}&limit={limit}
+- [Introduction](#introduction)
+- [Authentication](#authentication)
+- [Endpoints](#endpoints)
+  - [Get User Details](#get-user-details)
+  - [Get Transactions](#get-transactions)
+  - [Error Handling](#error-handling)
+- [Running the API](#running-the-api)
+- [Project Structure](#project-structure)
+- [Dependencies](#dependencies)
+- [Environment Variables](#environment-variables)
+- [Deployment](#deployment)
+- [License](#license)
 
+## Introduction
 
-## Prerequisites
-- Basic understanding of React and TypeScript
-- Familiarity with REST APIs and async operations in React
+This API serves as a demonstration of RESTful web services in a Node.js/Express environment. It provides endpoints for retrieving randomized user data and simulating banking transactions. The primary purpose of this API is to be used in technical interviews.
 
-## Setup
-Fork the provided CodeSandbox template: [transactions-qpfqpz](https://codesandbox.io/p/sandbox/transactions-qpfqpz)
+## Authentication
 
-## Access Token
-We will use the following hardcoded access token for this session:
-`eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkZTllMDhkMy03OWMyLTRjYjMtOTZmMi0wMjNmZWE3ODcyY2UiLCJpc3MiOiJhd2Vzb21lLWJhbmsifQ.4J1IAK7lFM8FWpO_y3vC-cTWkEIs3DGrNysaJSaS-IE`
+To access the API, you must include a valid UUID in the `Authorization` header of your requests. The static UUID for this API is:
 
-## Key Concepts
-1. **Fetching Data**: How to use Axios or Fetch API in a React TypeScript environment to get data from the API.
-2. **Displaying Data**: Techniques to effectively display the user data and transactions in the UI.
-3. **Error Handling**: Strategies for dealing with API instability and HTTP errors (e.g., HTTP 429).
-4. **Pagination**: Implementing a "Load More" functionality for transaction data.
+```
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkZTllMDhkMy03OWMyLTRjYjMtOTZmMi0wMjNmZWE3ODcyY2UiLCJpc3MiOiJhd2Vzb21lLWJhbmsifQ.4J1IAK7lFM8FWpO_y3vC-cTWkEIs3DGrNysaJSaS-IE
+```
 
-## Steps
-1. **Setting Up the Project**: Overview of the existing CodeSandbox template structure.
-2. **Creating API Service**: Setting up the API calls to fetch user data and transactions.
-3. **Building Components**: Developing React components to display the data.
-4. **Implementing Pagination**: Adding logic to handle loading more transactions.
-5. **Error Handling**: Implementing error handling mechanisms for the API calls.
+If the correct UUID is not provided, the API will return a `401 Unauthorized` response.
 
-## Conclusion
-Wrap-up and recap of what we've built. Discuss potential improvements or additional features.
+## Endpoints
 
-## Phase 2: Implementing Pagination for Transactions
+### Get User Details
 
-Useful link with resources:
+- **Endpoint:** `GET /api/v1/user`
+- **Description:** Retrieves a JSON object containing details of a randomly generated user.
 
-https://awesome-bank.xyz/step-2-sleepy-euler.html
+**Response Example:**
 
-OR:
+```json
+{
+  "name": "John",
+  "surname": "Doe",
+  "age": 30,
+  "created_at": "2023-01-01T00:00:00.000Z",
+  "updated_at": "2023-08-25T12:34:56.789Z",
+  "username": "johndoe123"
+}
+```
 
-- GET https://awesome-bank.xyz/api/transactions?from={from}&limit={limit} (same token used above)
+### Get Transactions
 
-### Overview
-In this phase, we will enhance our application by adding pagination to the transactions API call. This will allow us to load transactions in increments, rather than all at once, improving the performance and user experience.
+- **Endpoint:** `GET /api/v1/user/transactions`
+- **Description:** Returns a list of transactions associated with the user. You can paginate through the results by providing a timestamp as the `page` parameter and limit the number of transactions returned using the `limit` parameter.
 
-### Objectives
-1. Implement pagination logic to load transactions in batches.
-2. Handle potential API errors and instabilities.
+**Query Parameters:**
 
-### Key Concepts
-- **Pagination Parameters**: Understanding the use of `from` and `limit` query parameters in API requests.
-- **State Management**: Managing the state for pagination (like the last transaction timestamp).
-- **UI Interaction**: Updating the UI to allow users to load more transactions.
+- `page` (integer): A timestamp indicating where to start listing transactions.
+- `limit` (integer): The number of transactions to return. Default is 10.
 
-### Implementation Steps
+**Example Request:**
 
-1. **Update State for Pagination**:
-    - Add state variables to keep track of the last transaction timestamp and whether there are more transactions to load.
+```
+GET /api/v1/user/transactions?page=1724582017551
+```
 
-2. **Modify API Call**:
-    - Adjust the existing API call function to accept `from` and `limit` parameters.
-    - Ensure that the function updates the state with the new transactions and the timestamp of the last transaction fetched.
+**Response Example:**
 
-3. **Add 'Load More' Button**:
-    - Implement a button in the UI that, when clicked, triggers the fetching of more transactions using the updated API function.
-    - The button should only be visible if there are more transactions to load.
+```json
+[
+  {
+    "id": "ae693a7a-c71f-4968-9966-01d97e2bbdd5",
+    "type": "others",
+    "amount": 5473,
+    "geo_location": {
+      "latitude": "25.3087",
+      "longitude": "73.5521"
+    },
+    "description": "Refined Soft Pizza",
+    "establishment_name": "Will, Hauck and Windler",
+    "city": "Swaniawskiburgh",
+    "country": "Malaysia",
+    "transaction_date": 1724582051742
+  },
+  {
+    "id": "fa63a8f3-9793-4190-bed9-f2d8565ee887",
+    "type": "health",
+    "amount": 3524,
+    "geo_location": {
+      "latitude": "78.6825",
+      "longitude": "-41.2210"
+    },
+    "description": "Unbranded Soft Chips",
+    "establishment_name": "Waters Inc",
+    "city": "Palmdale",
+    "country": "Djibouti",
+    "transaction_date": 1724582102769
+  }
+]
+```
 
-4. **Error Handling**:
-    - Implement error handling for the API request to manage HTTP 429 errors or other instabilities.
-    - Display appropriate messages to the user in case of an error.
+### Error Handling
 
-5. **Testing**:
-    - Test the pagination feature to ensure it loads more transactions correctly and handles errors as expected.
+Approximately every 3rd or 4th request to the transactions endpoint may return a `500 Internal Server Error`. This is intentional and designed to help test how the frontend handles errors.
 
-### Expected Outcome
-By the end of this phase, the application will be able to load transactions in a paginated manner. Users will be able to click on a 'Load More' button to load additional transactions. The application will handle API errors gracefully, providing a better user experience.
+## Running the API
 
-### Additional Notes
-- Consider setting a reasonable default value for the `limit` parameter to balance load times and user experience.
-- Ensure the UI is responsive during the loading of additional transactions and displays loading indicators appropriately.
+To run the API locally, follow these steps:
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/yourusername/bank-transactions-api.git
+   ```
+
+2. **Navigate to the project directory:**
+   ```bash
+   cd bank-transactions-api
+   ```
+
+3. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+4. **Start the server:**
+   ```bash
+   npm start
+   ```
+
+5. **Access the API:**
+   The API will be available at `http://localhost:3000`.
+
+## Project Structure
+
+```
+/bank-transactions-api
+│
+├── /routes
+│   ├── index.js        # Main route handler
+│   └── user.js         # User and transactions route handler
+│
+├── /views              # View templates (Jade)
+│
+├── /public             # Static files (images, CSS, JS)
+│
+├── index.js            # Main application file
+├── package.json        # Project metadata and dependencies
+└── README.md           # Project documentation
+```
+
+## Dependencies
+
+- **Express:** Web framework for Node.js
+- **Faker:** Library for generating fake data
+- **Morgan:** HTTP request logger middleware
+- **Cookie-Parser:** Parse cookies attached to the client request object
+- **Http-Errors:** Create HTTP errors for Express
+- **Jade:** Templating engine for rendering HTML
+- **HPP:** Express middleware to protect against HTTP Parameter Pollution
+- **Uglify-JS:** JavaScript parser, mangler/compressor, beautifier toolkit
+
+## Environment Variables
+
+You can set the following environment variables to configure the API:
+
+- `PORT`: The port number on which the API will run (default is `3000`).
+
+## Deployment
+
+To deploy the API on Vercel:
+
+1. Ensure you have the Vercel CLI installed:
+   ```bash
+   npm install -g vercel
+   ```
+
+2. Run the deployment command:
+   ```bash
+   vercel
+   ```
+
+3. Follow the prompts to complete the deployment.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

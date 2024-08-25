@@ -3,6 +3,8 @@
 
 **This API is designed for interview purposes.** It simulates user data and banking transactions, providing endpoints for retrieving user details and transaction histories. The API also includes error handling mechanisms for testing frontend robustness.
 
+[https://bank-transactions-api.vercel.app/](https://bank-transactions-api.vercel.app/)
+
 ## Table of Contents
 
 - [Introduction](#introduction)
